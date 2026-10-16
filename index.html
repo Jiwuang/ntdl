@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nhận thức dược liệu</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--panel:rgba(16,24,44,.72);--line:rgba(120,150,255,.18);--ink:#e6ecff;--mute:#8d9bbd;--c1:#22d3ee;--c2:#a78bfa;--ok:#34d399;--bad:#fb7185}
+*{box-sizing:border-box}html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Be Vietnam Pro",system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(600px 400px at 12% 8%,rgba(34,211,238,.17),transparent 70%),radial-gradient(700px 500px at 92% 18%,rgba(167,139,250,.17),transparent 70%)}
+body::after{content:"";position:fixed;inset:-44px;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000 15%,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0,#000 15%,transparent 72%);animation:drift 26s linear infinite}
+@keyframes drift{to{transform:translate(44px,44px)}}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.wrap{max-width:920px;margin:0 auto;padding:24px 16px 70px}
+h1{margin:0;font-size:2rem;font-weight:800;letter-spacing:-.01em;background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.25rem;margin:.2em 0 .6em}h3{font-size:1.05rem;margin:.2em 0 .6em}
+.sci{font-family:"JetBrains Mono",ui-monospace,monospace;font-style:italic;font-size:.86em;color:var(--c1)}
+.mu{color:var(--mute);font-size:.9rem;margin:0 0 4px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.st{flex:1;min-width:130px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);backdrop-filter:blur(8px)}
+.st b{display:block;font:700 1.6rem "JetBrains Mono",monospace;color:var(--c1)}.st span{color:var(--mute);font-size:.82rem}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--panel);backdrop-filter:blur(8px)}
+nav button{font:inherit;font-weight:600;padding:8px 14px;border:0;border-radius:9px;background:none;color:var(--mute);cursor:pointer;transition:color .2s,background .2s}
+nav button:hover{color:var(--ink)}
+nav button.on{color:#04101c;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 18px rgba(34,211,238,.4)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--c1);outline-offset:2px}
+.box{position:relative;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;animation:in .3s both}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border:0;border-radius:9px;background:linear-gradient(90deg,var(--c1),var(--c2));color:#04101c;cursor:pointer;transition:box-shadow .2s,transform .15s}
+.btn:hover{box-shadow:0 0 20px rgba(34,211,238,.45)}.btn:active{transform:scale(.97)}
+.btn.alt{background:transparent;color:var(--c1);border:1px solid var(--c1)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+input[type=search],textarea,select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:rgba(6,10,22,.8);color:var(--ink)}
+input[type=search],textarea{width:100%}textarea{min-height:130px;resize:vertical}
+input[type=radio]{accent-color:var(--c1)}
+.chip{display:inline-block;font:inherit;font-size:.78rem;padding:2px 10px;border:1px solid var(--line);border-radius:99px;color:var(--mute);background:none}
+button.chip{cursor:pointer;font-size:.82rem;padding:4px 12px;transition:all .2s}button.chip:hover{color:var(--ink);border-color:var(--c1)}
+.chip.on{background:rgba(34,211,238,.15);border-color:var(--c1);color:var(--c1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:14px}
+.card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;font:inherit;padding:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;cursor:pointer;overflow:hidden;transition:border-color .25s,box-shadow .25s;animation:in .4s both;animation-delay:calc(var(--i,0)*25ms)}
+.card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(34,211,238,.2),transparent 65%)}
+.card:hover{border-color:var(--c1);box-shadow:0 0 24px rgba(34,211,238,.18)}.card:hover::before{opacity:1}
+.card:focus-visible{outline:2px solid var(--c1)}
+.card b{font-size:1.05rem}.card small{color:var(--mute);line-height:1.35}
+.no{font:600 .78rem "JetBrains Mono",monospace;color:var(--c2)}
+.opts{display:grid;gap:8px;margin-top:10px}.opts.two{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.opt{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer;display:block;transition:border-color .2s,background .2s}
+.opt:hover:not(:disabled){border-color:var(--c1);background:rgba(34,211,238,.08)}
+.opt.right{background:rgba(52,211,153,.2);border-color:var(--ok);box-shadow:0 0 14px rgba(52,211,153,.3)}
+.opt.wrong{background:rgba(251,113,133,.2);border-color:var(--bad)}
+.bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 10px var(--c1);transition:width .4s}
+.ck{list-style:none;padding:0;margin:8px 0}.ck li{padding:3px 0}.ck .y{color:var(--ok)}.ck .x{color:var(--bad)}
+.msg{font-weight:600}
+.meter{display:flex;gap:6px;margin:8px 0}.meter i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.1);transition:background .3s}
+.meter i.on{background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 10px rgba(34,211,238,.6)}
+.term{list-style:none;margin:10px 0;padding:12px 14px;background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:10px}
+.term li::before{content:"› ";color:var(--c1);font-weight:700}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
+.tile{font:inherit;font-size:.9rem;min-height:72px;padding:8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer;transition:all .2s}
+.tile.sci{font-family:"JetBrains Mono",monospace;font-style:italic;color:var(--c1)}
+.tile.open{border-color:var(--c1);background:rgba(34,211,238,.18);box-shadow:0 0 16px rgba(34,211,238,.4)}
+.tile.done{border-color:var(--ok);background:rgba(52,211,153,.2);color:var(--ok);cursor:default}
+.top{position:sticky;top:0;z-index:2;background:rgba(7,11,20,.88);backdrop-filter:blur(8px);padding:8px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+dialog{border:1px solid var(--c1);border-radius:16px;padding:0;max-width:520px;width:calc(100% - 24px);max-height:90vh;color:var(--ink);background:#0b1224;box-shadow:0 0 40px rgba(34,211,238,.25)}
+dialog::backdrop{background:rgba(3,6,14,.7);backdrop-filter:blur(3px)}.dd{padding:22px 20px 20px}
+dialog .x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:1.2rem;cursor:pointer}
+dl{margin:0}dt{font-weight:600;color:var(--c2);margin-top:10px}dd{margin:0}dd ul{margin:2px 0;padding-left:20px}
+@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Nhận thức dược liệu</h1>
+<p class="mu" style="margin-top:4px">Nhóm hỗ trợ tiêu hóa, gan mật, bổ dưỡng</p><div class="stats" id="stats"></div>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+<dialog id="dlg"></dialog>
+<script>
+const $=s=>document.querySelector(s),esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a},uniq=a=>[...new Set(a)];
+const n=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+/* Dữ liệu: tên VN | tên khoa học | họ | bộ phận | thành phần (;) | công dụng (;) | ghi chú */
+const R=`Gừng|Zingiber officinale|Zingiberaceae|Thân rễ|Tinh dầu;d-camphor;Zingiberen|Trị lạnh bụng, đầy hơi;Đau bụng, chống nôn, say tàu xe;Cảm cúm, ho|Lá hẹp hơn riềng, nghệ, mọc 2 bên
+Riềng|Alpinia officinarum|Zingiberaceae|Thân rễ|Tinh dầu;Flavonoid|Gia vị;Kích thích tiêu hóa;Loét dạ dày, trị sốt rét|
+Nghệ vàng|Curcuma longa|Zingiberaceae|Thân rễ|Tinh bột;Curcuminoid;Tinh dầu|Viêm loét dạ dày;Vàng da|Kích thước lá: nghệ > riềng > gừng
+Nga truật (Nghệ đen)|Curcuma zedoaria|Zingiberaceae|Thân rễ, rễ củ|Tinh dầu;Chất nhựa;Curcumin;Chất nhầy|Khó tiêu;Đầy bụng, nôn mửa;Đau kinh, kinh nguyệt không đều|Gân giữa màu tím, gần giống nghệ vàng
+Lựu|Punica granatum|Punicaceae|Vỏ thân, cành, vỏ rễ, vỏ quả|Tannin;Alkaloid;Hợp chất phenol|Trị sán;Thuốc ngậm chữa đau răng;Chữa lỵ, tiêu chảy|Lá nhỏ, thuôn. Tannin giảm triệu chứng tiêu chảy
+Sử quân tử|Combretum indicum|Combretaceae|Hạt|Dầu béo;Saponin;Flavonoid;Acid phenol;Steroid|Tẩy giun;Thuốc ngậm chữa nhức răng|Mọc hàng rào, nhám 2 bên, lá đối
+Vàng đắng|Coscinium fenestratum|Menispermaceae|Thân và rễ|Alkaloid;Palmatin|Sốt;Lỵ;Đau mắt;Hỗ trợ tiêu hóa|
+Muồng trâu|Senna alata|Fabaceae|Lá, quả, hạt|Anthraglycosid|Thuốc nhuận tràng;Chữa hắc lào;Trị giun đũa (kết hợp hạt Trâm bầu)|
+Lô hội|Aloe vera|Xanthorrhoeaceae|Nhựa, dịch rỉ, chất nhầy, thịt lá|Anthraglycosid;Nhựa lô hội;Chất nhầy|Kích thích tiêu hóa (liều nhỏ);Vị thuốc tẩy (liều cao);Thông mật, trị bỏng, mỹ phẩm|
+Ổi|Psidium guajava|Myrtaceae|Búp non, lá, quả|Tannin;Flavonoid;Tinh dầu (lá);Vitamin C|Săn niêm mạc ruột;Giảm tiết dịch ruột;Trị viêm ruột cấp và mạn;Kiết lỵ, tiêu chảy|
+Sim|Rhodomyrtus tomentosa|Myrtaceae|Lá, quả, rễ|Tinh dầu;Flavonoid;Tannin|Đau bụng;Tiêu chảy;Kiết lỵ|Hình thái giống ổi, hạt nhỏ hơn, màu tím
+Mơ lông|Paederia foetida|Rubiaceae|Lá|Alkaloid;Protein;Acid béo;Tinh dầu|Trị bí tiểu, phong thấp;Chữa giun kim, giun đũa;Chữa lỵ trực trùng|Nhiều lông 2 mặt, 1 mặt tím, thân leo
+Ngũ gia bì|Schefflera octophylla|Araliaceae|Vỏ thân, rễ, lá|Saponin;Tinh dầu|Thuốc bổ, trợ tiêu hóa;Thông tiểu, chữa phù thũng;Chữa phong thấp|Lá hình chân chim
+Ngũ gia bì gai|Acanthopanax aculeatus|Araliaceae|Vỏ thân|Saponin triterpenoid;Tinh dầu;Alkaloid|Thuốc bổ, làm mạnh xương khớp;Điều trị mất ngủ;Tăng cường trí nhớ|Cây nhỏ, nhiều gai, lá kép chân vịt, hoa mọc thành tán ở đầu cành
+Ý dĩ (bo bo)|Coix lacryma-jobi|Poaceae|Nhân hạt|Tinh bột;Protein;Dầu béo;Acid amin;Lignan;Benzoxazolon|Kiện tỳ, bổ phổi;Bổ sức, lợi sữa;Lợi tiểu, trị phù thũng, tê thấp;Rối loạn tiêu hóa;Tiêu chảy, viêm ruột thừa|
+Hà thủ ô đỏ|Polygonum multiflorum|Polygonaceae|Rễ củ|Anthraglycosid;Tannin;Tinh bột;Lipid|Bổ huyết, tăng sinh huyết dịch;Kích thích tiêu hóa, kháng viêm|Lá nhọn ở đầu, hình tim. "Xanh tóc, đỏ da"
+Đinh lăng|Polyscias fruticosa|Araliaceae|Rễ, lá|Saponin triterpen|Thuốc bổ;Chữa ho, ho ra máu;Kiết lỵ, lợi sữa, thông tiểu|Có gai
+Rau má|Centella asiatica|Apiaceae|Toàn cây (trên mặt đất)|Flavonoid;Saponin;Alkaloid;Tinh dầu|Lợi tiểu, lợi mật;Kháng viêm, kháng khuẩn;Chữa vàng da;Chống oxy hóa|Saponin là thành phần chính (tạo bọt)
+Râu mèo|Orthosiphon aristatus|Lamiaceae|Toàn cây (trên mặt đất)|Flavonoid;Saponin|Lợi tiểu;Kháng viêm;Kháng khuẩn|
+Diệp hạ châu|Phyllanthus amarus|Phyllanthaceae|Toàn cây (trên mặt đất)|Flavonoid;Lignan;Alkaloid|Giải độc gan;Hỗ trợ tiêu hóa;Lợi tiểu giải độc|Chó đẻ thân xanh. Lá kép lông chim, lá chét rất nhỏ
+Dành dành|Gardenia jasminoides|Rubiaceae|Quả chín|Iridoid;Sắc tố;Manitol|Lợi tiểu;Kháng sinh;Thanh nhiệt, hạ sốt;Cầm máu|Thân gỗ nhỏ, lá đơn không răng cưa, hoa 6 cánh trắng
+Kim ngân|Lonicera japonica|Caprifoliaceae|Nụ hoa|Flavonoid;Acid hữu cơ: chlorogenic, isochlorogenic|Mụn nhọt;Dị ứng;Tiêu chảy, kiết lị|Hoa trắng vàng, dây leo. Dùng nụ pha nước uống như trà để kháng dị ứng
+Long não|Cinnamomum camphora|Lauraceae|Quả, gỗ và rễ|Tinh dầu: d-camphor|Chữa cảm cúm;Trị đau dạ dày, đầy bụng;Thấp khớp, tổn thương do té ngã|Bẻ kỹ có mùi lá chanh`.split('\n').map(l=>{const p=l.split('|');return{vn:p[0],sci:p[1],ho:p[2],bp:p[3],tp:p[4].split(';'),cd:p[5].split(';'),gc:p.slice(6).join('|')}});
+
+var ST;const V={};let X={},FH='';
+const TABS=[['learn','Tra cứu'],['quiz','Trắc nghiệm'],['essay','Tự luận'],['exam','Tạo đề'],['game','Trò chơi']];
+function go(t){clearInterval(X.t);$('#nav').innerHTML=TABS.map(x=>`<button class="${x[0]===t?'on':''}" onclick="go('${x[0]}')">${x[1]}</button>`).join('');V[t]()}
+
+/* Tra cứu */
+V.learn=()=>{$('#main').innerHTML=`<input type="search" id="q" placeholder="Tìm theo tên, họ, thành phần, công dụng..." aria-label="Tìm kiếm"><div class="row">${['',...uniq(R.map(x=>x.ho)).sort()].map(h=>`<button class="chip ${h==FH?'on':''}" onclick="FH='${h}';V.learn()">${h||'Tất cả'}</button>`).join('')}</div><div class="grid" id="g"></div>`;
+const draw=()=>{const k=n($('#q').value).join(' ');$('#g').innerHTML=R.map((p,i)=>[p,i]).filter(([p])=>(!FH||p.ho==FH)&&(!k||n([p.vn,p.sci,p.ho,p.tp.join(' '),p.cd.join(' ')].join(' ')).join(' ').includes(k))).map(([p,i],j)=>`<button class="card" style="--i:${j}" onclick="show(${i})"><span class="no">#${String(i+1).padStart(2,'0')}</span><b>${esc(p.vn)}</b><span class="sci">${esc(p.sci)}</span><span class="chip">${esc(p.ho)}</span><small>${esc(p.cd[0])}</small></button>`).join('')};
+$('#q').oninput=draw;draw()};
+function show(i){const p=R[i],ul=a=>'<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>';
+$('#dlg').innerHTML=`<button class="x" onclick="this.parentNode.close()" aria-label="Đóng">×</button><div class="dd"><h2 style="margin-bottom:0">${esc(p.vn)}</h2><div class="sci">${esc(p.sci)}</div><dl><dt>Họ</dt><dd>${esc(p.ho)}</dd><dt>Bộ phận dùng</dt><dd>${esc(p.bp)}</dd><dt>Thành phần hóa học</dt><dd>${ul(p.tp)}</dd><dt>Công dụng</dt><dd>${ul(p.cd)}</dd>${p.gc?`<dt>Đặc điểm nhận dạng, ghi chú</dt><dd>${esc(p.gc)}</dd>`:''}</dl></div>`;$('#dlg').showModal()}
+$('#dlg').onclick=e=>{if(e.target===e.currentTarget)e.target.close()};
+
+/* Sinh câu hỏi trắc nghiệm */
+function gen(p){const o=(a,pl)=>sh([a,...sh(pl.filter(x=>x!==a)).slice(0,3)]),allTp=uniq(R.flatMap(x=>x.tp));
+const f=[
+()=>({q:`Tên khoa học của ${p.vn} là gì?`,a:p.sci,o:o(p.sci,R.map(x=>x.sci))}),
+()=>({q:`${p.sci} là cây nào?`,a:p.vn,o:o(p.vn,R.map(x=>x.vn))}),
+()=>({q:`${p.vn} thuộc họ nào?`,a:p.ho,o:o(p.ho,uniq(R.map(x=>x.ho)))}),
+()=>({q:`Bộ phận dùng làm thuốc của ${p.vn} là gì?`,a:p.bp,o:o(p.bp,uniq(R.map(x=>x.bp)))}),
+()=>({q:`Cây nào có công dụng: ${p.cd.join('; ')}?`,a:p.vn,o:o(p.vn,R.map(x=>x.vn))}),
+()=>{const a=p.tp[Math.random()*p.tp.length|0];return{q:`Thành phần hóa học nào có trong ${p.vn}?`,a,o:o(a,allTp.filter(x=>!p.tp.includes(x)))}}];
+const r=f[Math.random()*f.length|0]();r.p=p;return r}
+
+/* Trắc nghiệm từng câu */
+let Z={};
+V.quiz=()=>{if(!Z.l)Z={l:sh(R).slice(0,10).map(gen),i:0,s:0,k:null};
+if(Z.i>=Z.l.length)return $('#main').innerHTML=`<div class="box"><h2>Kết quả: ${Z.s}/${Z.l.length}</h2><button class="btn" onclick="Z={};V.quiz()">Làm bộ mới</button></div>`;
+const q=Z.l[Z.i],d=Z.k!==null;
+$('#main').innerHTML=`<div class="box"><div class="bar"><i style="width:${Z.i/Z.l.length*100}%"></i></div><p class="mu">Câu ${Z.i+1}/${Z.l.length}</p><h2>${esc(q.q)}</h2><div class="opts">${q.o.map((o,k)=>`<button class="opt ${d?(o===q.a?'right':k===Z.k?'wrong':''):''}" ${d?'disabled':''} onclick="zp(${k})">${esc(o)}</button>`).join('')}</div>${d?`<div class="row"><b>${esc(q.p.vn)}</b><span class="sci">${esc(q.p.sci)}</span><span class="chip">${esc(q.p.ho)}</span></div><div class="row"><button class="btn" onclick="Z.i++;Z.k=null;V.quiz()">${Z.i+1<Z.l.length?'Câu tiếp':'Xem kết quả'}</button></div>`:''}</div>`};
+const zp=k=>{Z.k=k;if(Z.l[Z.i].o[k]===Z.l[Z.i].a)Z.s++;V.quiz()};
+
+/* Tự luận: chấm theo từ khóa */
+const essayQ=p=>`Trình bày tên khoa học, họ, bộ phận dùng, thành phần hóa học và công dụng của ${p.vn}.`;
+const items=p=>[{l:'Tên khoa học',t:p.sci},{l:'Họ',t:p.ho},{l:'Bộ phận dùng',t:p.bp},...p.tp.map(t=>({l:'Thành phần',t})),...p.cd.map(t=>({l:'Công dụng',t}))];
+function rev(p,txt){const A=new Set(n(txt));const it=items(p).map(x=>{const w=n(x.t);return{...x,ok:w.filter(y=>A.has(y)).length/w.length>=.6}});const ok=it.filter(x=>x.ok).length;
+return{ok,total:it.length,html:`<ul class="ck">${it.map(x=>`<li class="${x.ok?'y':'x'}">${x.ok?'✓':'✗'} <b>${x.l}:</b> ${esc(x.t)}</li>`).join('')}</ul>`}}
+let E={};
+V.essay=()=>{if(!E.p)E={p:R[Math.random()*R.length|0],r:null,v:''};
+$('#main').innerHTML=`<div class="box"><h2>${esc(essayQ(E.p))}</h2><textarea id="et" aria-label="Bài làm" ${E.r?'disabled':''}>${esc(E.v)}</textarea><div class="row">${E.r?`<button class="btn" onclick="E={};V.essay()">Câu khác</button>`:`<button class="btn" onclick="E.v=$('#et').value;E.r=rev(E.p,E.v);V.essay()">Chấm bài</button>`}</div>${E.r?`<p class="msg">Bạn nêu đủ ${E.r.ok}/${E.r.total} ý. Ý có dấu ✗ là phần còn thiếu:</p>${E.r.html}`:''}</div>`};
+
+/* Tạo đề kiểm tra */
+V.exam=()=>{clearInterval(X.t);$('#main').innerHTML=`<div class="box"><h2>Tạo đề kiểm tra</h2><div class="row"><label>Trắc nghiệm <select id="xm"><option>5<option selected>10<option>20<option>30</select></label><label>Tự luận <select id="xe"><option>0<option selected>2<option>3<option>5</select></label><label>Thời gian <select id="xt"><option value="0">Không giới hạn<option value="10">10 phút<option value="20" selected>20 phút<option value="30">30 phút</select></label></div><div class="row"><button class="btn" onclick="xs()">Tạo đề và bắt đầu</button></div></div>`};
+function xs(){const m=+$('#xm').value,e=+$('#xe').value,min=+$('#xt').value,O=sh(R);
+X={m:Array.from({length:m},(_,i)=>gen(O[i%O.length])),es:O.slice(0,e),min,end:Date.now()+min*6e4,done:0};xr();
+if(min){tick();X.t=setInterval(tick,1000)}else $('#tm').textContent='Không giới hạn thời gian'}
+function tick(){if(!$('#tm'))return clearInterval(X.t);const s=Math.max(0,Math.round((X.end-Date.now())/1000));$('#tm').textContent='Còn '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');if(!s)xf()}
+function xf(){clearInterval(X.t);X.a=X.m.map((q,i)=>{const c=document.querySelector(`input[name=q${i}]:checked`);return c?+c.value:-1});X.w=X.es.map((p,i)=>$('#es'+i).value);X.done=1;xr();scrollTo(0,0)}
+function xr(){const d=X.done;let sc=0,ep=0;
+const mc=X.m.map((q,i)=>{const a=d?X.a[i]:-1;if(d&&q.o[a]===q.a)sc++;return `<div class="box"><p class="mu">Câu ${i+1}</p><h3>${esc(q.q)}</h3><div class="opts">${q.o.map((o,k)=>`<label class="opt ${d?(o===q.a?'right':k===a?'wrong':''):''}"><input type="radio" name="q${i}" value="${k}" ${k===a?'checked':''} ${d?'disabled':''}> ${esc(o)}</label>`).join('')}</div></div>`}).join('');
+const es=X.es.map((p,i)=>{let h='';if(d){const r=rev(p,X.w[i]);ep+=r.ok/r.total;h=`<p class="msg">Nêu đủ ${r.ok}/${r.total} ý</p>${r.html}`}return `<div class="box"><p class="mu">Tự luận ${i+1}</p><h3>${esc(essayQ(p))}</h3><textarea id="es${i}" ${d?'disabled':''}>${esc(d?X.w[i]:'')}</textarea>${h}</div>`}).join('');
+$('#main').innerHTML=`<div class="top">${d?`<b>Trắc nghiệm: ${sc}/${X.m.length}${X.es.length?' · Tự luận: '+Math.round(ep/X.es.length*100)+'%':''}</b>`:'<b id="tm"></b>'}<button class="btn" onclick="${d?'V.exam()':'xf()'}">${d?'Tạo đề mới':'Nộp bài'}</button></div>${mc}${es}`}
+
+/* Trò chơi */
+let g='match',M={},S={};
+V.game=()=>{$('#main').innerHTML=`<div class="row" style="margin:0 0 12px"><button class="btn ${g=='match'?'':'alt'}" onclick="g='match';V.game()">Ghép cặp</button><button class="btn ${g=='guess'?'':'alt'}" onclick="g='guess';V.game()">Đoán cây qua gợi ý</button></div><div id="gm"></div>`;g=='match'?gmatch():gguess()};
+function gmatch(){if(!$('#gm'))return;
+if(!M.t){M={t:sh(sh(R).slice(0,6).flatMap((p,id)=>[{id,x:p.vn},{id,x:p.sci,s:1}])),o:[],d:new Set(),m:0}}
+const w=M.d.size==M.t.length;
+$('#gm').innerHTML=`<div class="box"><p style="margin-top:0">Ghép tên Việt Nam với tên khoa học. Số lượt: <b>${M.m}</b></p><div class="tg">${M.t.map((x,i)=>`<button class="tile ${x.s?'sci':''} ${M.d.has(i)?'done':M.o.includes(i)?'open':''}" onclick="mp(${i})">${esc(x.x)}</button>`).join('')}</div>${w?`<p class="msg">Hoàn thành sau ${M.m} lượt!</p>`:''}<div class="row"><button class="btn" onclick="M={};gmatch()">${w?'Ván mới':'Xáo lại'}</button></div></div>`}
+function mp(i){if(M.d.has(i)||M.o.includes(i)||M.o.length>=2)return;M.o.push(i);gmatch();
+if(M.o.length==2){M.m++;const[a,b]=M.o;if(M.t[a].id==M.t[b].id){M.d.add(a);M.d.add(b);M.o=[];setTimeout(gmatch,300)}else setTimeout(()=>{M.o=[];gmatch()},800)}}
+function gguess(){if(!$('#gm'))return;if(!S.l)S={l:sh(R).slice(0,8),i:0,s:0,h:1,k:null,o:null};
+if(S.i>=S.l.length)return $('#gm').innerHTML=`<div class="box"><h2>Tổng điểm: ${S.s}/${S.l.length*4}</h2><button class="btn" onclick="S={};gguess()">Chơi lại</button></div>`;
+const p=S.l[S.i],d=S.k!==null,H=[`Công dụng: ${p.cd.slice(0,2).join('; ')}`,`Bộ phận dùng: ${p.bp}`,`Họ: ${p.ho}`,p.gc?`Đặc điểm: ${p.gc}`:`Thành phần: ${p.tp.join(', ')}`];
+if(!S.o)S.o=sh([p,...sh(R.filter(x=>x!==p)).slice(0,5)]);
+$('#gm').innerHTML=`<div class="box"><p class="mu">Cây ${S.i+1}/${S.l.length} · Điểm: ${S.s}. Càng ít gợi ý càng nhiều điểm (tối đa 4).</p><div class="meter">${[1,2,3,4].map(i=>`<i class="${i<=S.h?'on':''}"></i>`).join('')}</div><ul class="term">${H.slice(0,S.h).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${!d&&S.h<4?`<button class="btn alt" onclick="S.h++;gguess()">Thêm gợi ý</button>`:''}<div class="opts two">${S.o.map((o,k)=>`<button class="opt ${d?(o===p?'right':k===S.k?'wrong':''):''}" ${d?'disabled':''} onclick="gp(${k})">${esc(o.vn)}</button>`).join('')}</div>${d?`<p class="msg"><span class="sci">${esc(p.sci)}</span></p><button class="btn" onclick="S.i++;S.h=1;S.k=null;S.o=null;gguess()">Cây tiếp theo</button>`:''}</div>`}
+function gp(k){S.k=k;if(S.o[k]===S.l[S.i])S.s+=5-S.h;gguess()}
+
+ST=[[R.length,'cây dược liệu'],[uniq(R.map(x=>x.ho)).length,'họ thực vật'],[uniq(R.flatMap(x=>x.tp)).length,'nhóm thành phần']];
+$('#stats').innerHTML=ST.map(x=>`<div class="st"><b data-n="${x[0]}">0</b><span>${x[1]}</span></div>`).join('');
+document.querySelectorAll('[data-n]').forEach(e=>{const t=+e.dataset.n;if(matchMedia('(prefers-reduced-motion:reduce)').matches){e.textContent=t;return}const t0=performance.now();(function f(now){const k=Math.min(1,(now-t0)/900);e.textContent=Math.round(t*k);if(k<1)requestAnimationFrame(f)})(t0)});
+document.addEventListener('mousemove',e=>{const c=e.target.closest&&e.target.closest('.card');if(c){const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}});
+go('learn');
+</script>
+</body>
+</html>
